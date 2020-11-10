@@ -1,6 +1,7 @@
 from subprocess import check_call
 from os import chdir
 
+
 def rev_comp(dna):
     D = {'A':'T','T':'A','C':'G','G':'C'}
     rc_dna = ''
@@ -9,6 +10,7 @@ def rev_comp(dna):
         rc_dna += nt
         dna = dna[:len(dna)-1]
     return rc_dna
+
 
 def translate(dna):
     """
@@ -47,10 +49,12 @@ def translate(dna):
         peptide.append(aa)
     return ''.join(peptide)
 
+
 # grep pfam of interest
 def grep_pfam_gtf(input_gtf, subset_gtf, pfam):
     cmd = f'grep -i "{pfam}" {input_gtf} > {subset_gtf}'
     check_call(cmd, shell=True)
+
 
 # get dna sequence from .fa and translate to protein .faa (frame was already considered when gtf was writen(start and end of nucleotide))
 def get_faa(subset_gtf, fasta, pfam, output_faa):
@@ -91,6 +95,7 @@ def get_faa(subset_gtf, fasta, pfam, output_faa):
             print(aa_seq, file=writer)
     writer.close()
 
+
 # rename header
 def rename(faa):
     if 'unselected' in faa:
@@ -122,16 +127,19 @@ def rename(faa):
         print(seq, file = writer)
     index.close()
     writer.close()
-    
+
+
 # MUSCLE alignment
 def muscle(input_faa, aligned_fasta):
     cmd = f'muscle -in {input_faa} -out {aligned_fasta}'
     check_call(cmd, shell=True)
 
+
 # Raxml
 def RAXML(input, output):
     cmd = f'raxmlHPC -f a -# 100 -p 1237 -x 1237 -m PROTGAMMAAUTO -s {input} -n {output}'
     check_call(cmd, shell=True)
+
 
 chdir('/Users/wyang/Desktop/phage_CT_project/dry_lab/042320_remove_redundant_contigs/phylogenetic_tree')
 pfam = 'Carbam_trans_C'
@@ -154,6 +162,3 @@ muscle(f'{pfam}.faa', f'{pfam}_aligned.afa')
 RAXML(f'{pfam}_aligned.afa',f'{pfam}.tree')
 
 # iTOL visualize RAxML_bipartitions file
-
-
-

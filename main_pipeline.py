@@ -7,39 +7,43 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import gaussian_kde
 import statsmodels.stats.multitest as multi
-import sys
+
 
 def prepare_file(read1, read2, prefix):
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/filter')
     cmd = f'cat {read1} {read2} > {prefix}.fq'
     subprocess.check_call(cmd, shell=True)
 
+
 def kmer_count(kmer, jf_name):
     ''' jellyfish count kmer'''
     cmd = f'jellyfish count {prefix}.fq -m {kmer} -s 1G -t 32 -C -o /mnt/home/ettwiller/wyang/data/101220_DNaseI/kmer_count/{kmer}_mer/{jf_name}.jf'
-    subprocess.check_call(cmd,shell=True)
+    subprocess.check_call(cmd, shell=True)
 
     cmd = f'jellyfish dump -L 10 /mnt/home/ettwiller/wyang/data/101220_DNaseI/kmer_count/{kmer}_mer/{jf_name}.jf > /mnt/home/ettwiller/wyang/data/101220_DNaseI/kmer_count/{kmer}_mer/{jf_name}.fa'
-    subprocess.check_call(cmd,shell=True)
+    subprocess.check_call(cmd, shell=True)
+
 
 def kmer_count_to_tsv(control, dnasei, kmer):
     os.chdir(f'/mnt/home/ettwiller/wyang/data/101220_DNaseI/kmer_count/{kmer}_mer')
     cmd = f'python /mnt/home/ettwiller/wyang/data/101220_DNaseI/kmer_count_to_tsv.py {control} {dnasei}'
-    subprocess.check_call(cmd,shell=True)
+    subprocess.check_call(cmd, shell=True)
+
 
 def random_sample(input, reduced, fold):
     '''randomly choose 1/fold of the entire dataset'''
-    with open(input,'r') as f:
+    with open(input, 'r') as f:
         head = f.readline().strip()
         lines = f.read().split('\n')[:-1]
 
     length = len(lines)
     new = random.sample(lines, int(length/fold))
 
-    with open(reduced,'w') as writer:
+    with open(reduced, 'w') as writer:
         print(head, file=writer)
         for each in new:
             print(each, file=writer)
+
 
 # read tsv into arrays
 def read_tsv(reduced):
@@ -51,14 +55,16 @@ def read_tsv(reduced):
     kmer, count1, count2 = zip(*data)      # unzip into three tuples (by column)
     return kmer, np.array(count1, dtype='int32'), np.array(count2, dtype='int32')
 
+
 def count_reads(file):
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/filter')
     line_count = 0
-    with open(file,'r') as f:
+    with open(file, 'r') as f:
         for line in f:
             line_count += 1
     reads_count = line_count / 4
     return reads_count
+
 
 def density_plot(png_name,reduced,group,min,max):
     sequence, count1, count2 = read_tsv(reduced)
@@ -91,15 +97,17 @@ def density_plot(png_name,reduced,group,min,max):
     plt.colorbar(pcm)
     plt.savefig(png_name, format='png', dpi=600)
 
+
 def assembly(fq1, fq2, assembly_name):
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/filter')
     cmd = f'spades.py --meta -1 {fq1} -2 {fq2} -o /mnt/home/ettwiller/wyang/data/101220_DNaseI/assembly_output/{assembly_name}_contigs --threads 32 --memory 350'
     subprocess.check_call(cmd,shell=True)
 
+
 def edit_assembly(file):
     os.chdir(f'/mnt/home/ettwiller/wyang/data/101220_DNaseI/assembly_output/{file}')
     # read original .fasta into a list of tuples [(header, seq), ...]
-    with open('contigs.fasta','r') as f:
+    with open('contigs.fasta', 'r') as f:
         temp_list = []
         header = f.readline().strip()
         seq = ''
@@ -108,7 +116,7 @@ def edit_assembly(file):
             if line.startswith('>'):
                 temp_list.append((header,seq))
                 header = line
-                seq=''
+                seq = ''
             elif line == '':
                 temp_list.append((header,seq))
                 break
@@ -128,7 +136,9 @@ def edit_assembly(file):
             else:
                 continue
 
-    # combine all_contigs.fa
+    # combine all_contigs.faex
+
+
 def combine_assembly():
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/assembly_output/output_contigs')
 
@@ -164,9 +174,11 @@ def combine_assembly():
                 else:
                     print(line, file=f)    
 
+
 def remove_redundant_contigs():
     cmd = f'cd-hit-est -i /mnt/home/ettwiller/wyang/data/101220_DNaseI/assembly_output/output_contigs/all_filter_contigs.fa -o /mnt/home/ettwiller/wyang/data/101220_DNaseI/nonredundant_contigs/nonredundant_all_filter_contigs.fa -c 0.95 -n 10 -d 0 -M 0 -T 32'
     subprocess.check_call(cmd,shell=True)
+
 
 def annotation():
     cmd = f'python /mnt/home/ettwiller/wyang/data/101220_DNaseI/translation.py'
@@ -175,6 +187,7 @@ def annotation():
     subprocess.check_call(cmd,shell=True)
     cmd = 'python /mnt/home/ettwiller/wyang/data/101220_DNaseI/parse_hmm_result_pfam_a.py'
     subprocess.check_call(cmd,shell=True)
+
 
 def mapping_all():
     cmd = f'bowtie2-build -f /mnt/home/ettwiller/wyang/data/101220_DNaseI/nonredundant_contigs/nonredundant_all_filter_contigs.fa 1019_filter'
@@ -191,11 +204,12 @@ def mapping_all():
     cmd = 'rm control_temp dnasei_temp *.bt2'
     subprocess.check_call(cmd,shell=True)
 
+
 def calculate_enrichment():
     # generate bed files
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/nonredundant_contigs/')
     bed = open('temp.bed','w')
-    with open('nonredundant_all_filter_contigs.fa','r') as f:
+    with open('nonredundant_all_filter_contigs.fa', 'r') as f:
         head = f.readline().strip()[1:]
         seq = ''
         for line in f:
@@ -223,6 +237,7 @@ def calculate_enrichment():
     # write to csv
     df.to_csv('/mnt/home/ettwiller/wyang/data/101220_DNaseI/select_contigs/contig_enrichment.csv', header=True, index=False)
 
+
 def plot(): # plot contig enrichment
     data = pd.read_csv('/mnt/home/ettwiller/wyang/data/101220_DNaseI/select_contigs/contig_enrichment.csv',header=0)
     df = pd.DataFrame(data)
@@ -239,6 +254,7 @@ def plot(): # plot contig enrichment
     fig = ax.get_figure()
     fig.set_size_inches(w=5,h=5)
     fig.savefig('/mnt/home/ettwiller/wyang/data/101220_DNaseI/select_contigs/enrichment_log.png', format='png', dpi=600)
+
 
 def select_contigs(threshold):
     data = pd.read_csv('/mnt/home/ettwiller/wyang/data/101220_DNaseI/select_contigs/contig_enrichment.csv',header=0)
@@ -290,6 +306,7 @@ def select_contigs(threshold):
                 for item in gtf[each]:
                     print(item, file=f)
 
+
 def count_nonredundant_pfams(input, output):
     '''
     count nonredundant pfams for each contigs, if a pfam occurs multiple time in a contig, it will be counted only once
@@ -314,6 +331,7 @@ def count_nonredundant_pfams(input, output):
     df = df.sort_values(by='nonredundant_counts', ascending=False)
     df.to_csv(output, index=False, header=True)
 
+
 # merge counts in selected_contigs and unselected_contigs
 def merge(input_select, input_unselect, output):
     ''' 
@@ -328,6 +346,7 @@ def merge(input_select, input_unselect, output):
     df = df.fillna(value=0)
     df.astype({'counts_selected_contigs':int, 'counts_unselected_contigs':int})
     df.to_csv(output, index=False, header=True)
+
 
 # fisher exact test for each pfam domain and bonferroni correction for multiple testing
 def corrected_fisher_test(input, output):
@@ -371,6 +390,7 @@ def corrected_fisher_test(input, output):
     df = df.sort_values('corrected_p_value')
     df.to_csv(output, index=False, header=True)
 
+
 def clean():
     os.chdir('/mnt/home/ettwiller/wyang/data/101220_DNaseI/pfam_a_annotation')
     subprocess.check_call('rm *_counts.csv', shell=True)
@@ -411,8 +431,6 @@ def main():
     merge(input_select='select_contigs_pfam_a_counts.csv', input_unselect='unselect_contigs_pfam_a_counts.csv', output='merged_pfam_a_counts.csv')
     corrected_fisher_test(input='merged_pfam_a_counts.csv', output='/mnt/home/ettwiller/wyang/data/101220_DNaseI/pfam_a_enrichment/pfam_a_enrichment_corrected.csv')
     clean()
-
-
 
 
 if __name__ == '__main__':
