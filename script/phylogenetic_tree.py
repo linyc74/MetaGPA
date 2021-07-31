@@ -31,7 +31,7 @@ def translate(dna):
     'GTG': 'V', 'TTT': 'F', 'TTC': 'F', 'ATG': 'M',
     'TGT': 'C', 'TGC': 'C', 'GCT': 'A', 'GCC': 'A',
     'GCA': 'A', 'GCG': 'A', 'GGT': 'G', 'GGC': 'G',
-    'GGA': 'G', 'GGG': 'G', 'CCT': 'P', 'CCC': 'P',
+    'GGA': 'G', 'GGG': 'G', 'CCT': 'P', 'current_dir': 'P',
     'CCA': 'P', 'CCG': 'P', 'ACT': 'T', 'ACC': 'T',
     'ACA': 'T', 'ACG': 'T', 'TCT': 'S', 'TCC': 'S',
     'TCA': 'S', 'TCG': 'S', 'AGT': 'S', 'AGC': 'S',
