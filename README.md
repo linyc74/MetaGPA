@@ -42,8 +42,8 @@ Run with default settings:
 
 Other options:
 
-    -l <minimum contig length> [default 0]
-    -c <enrichment score cutoff> [default 0.0]
+    -l <minimum contig length> [default 1000]
+    -c <enrichment score cutoff> [default 3.0]
 
 ### Input Fastq Files
 

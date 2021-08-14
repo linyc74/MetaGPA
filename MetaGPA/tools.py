@@ -1,3 +1,4 @@
+from os.path import exists
 from subprocess import check_output
 
 
@@ -45,3 +46,13 @@ def count_fq_reads(fq: str):
     else:
         cmd = f'echo $(cat {fq} | wc -l)/4 | bc'
         return int(check_output(cmd, shell=True).split()[0])
+
+
+def get_temp_path(prefix: str = 'temp', suffix: str = '') -> str:
+    i = 0
+    while True:
+        path = f'{prefix}_{i:06d}{suffix}'
+        if not exists(path):
+            break
+        i += 1
+    return path

@@ -9,7 +9,7 @@ from .assembly import Assembly, CombineAssembly
 from .count_pfam import CountNonredundantPfams, MergePfamCounts
 
 
-class Main(Processor):
+class MetaGPA(Processor):
 
     control_fq1: str
     control_fq2: str
@@ -65,7 +65,6 @@ class Main(Processor):
         self.count_nonredundant_pfams()
         self.merge_pfam_counts()
         self.corrected_fisher_test()
-        self.clean_up()
 
     def assembly(self):
         assembly = Assembly(self.settings).main
@@ -143,7 +142,3 @@ class Main(Processor):
     def corrected_fisher_test(self):
         CorrectedFisherTest(self.settings).main(
             merged_pfam_count_csv=self.merged_pfam_count_csv)
-
-    def clean_up(self):
-        if not self.debug:
-            self.call(f'rm -r {self.workdir}')
