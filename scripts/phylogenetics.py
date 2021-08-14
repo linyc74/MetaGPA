@@ -1,6 +1,8 @@
-from subprocess import check_call
-from os import chdir
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+import argparse
+from subprocess import check_call
 
 def rev_comp(dna):
     D = {'A':'T','T':'A','C':'G','G':'C'}
@@ -11,16 +13,13 @@ def rev_comp(dna):
         dna = dna[:len(dna)-1]
     return rc_dna
 
-
 def translate(dna):
     """
     Translate a DNA sequence.
     If the DNA length is not a multiple of 3, then leave the last 1 or 2 bases untranslated.
-
     Args:
         dna: str,
             the DNA sequence
-
     Returns: str,
         the translated amino acid sequence
     """
@@ -31,7 +30,7 @@ def translate(dna):
     'GTG': 'V', 'TTT': 'F', 'TTC': 'F', 'ATG': 'M',
     'TGT': 'C', 'TGC': 'C', 'GCT': 'A', 'GCC': 'A',
     'GCA': 'A', 'GCG': 'A', 'GGT': 'G', 'GGC': 'G',
-    'GGA': 'G', 'GGG': 'G', 'CCT': 'P', 'current_dir': 'P',
+    'GGA': 'G', 'GGG': 'G', 'CCT': 'P', 'CCC': 'P',
     'CCA': 'P', 'CCG': 'P', 'ACT': 'T', 'ACC': 'T',
     'ACA': 'T', 'ACG': 'T', 'TCT': 'S', 'TCC': 'S',
     'TCA': 'S', 'TCG': 'S', 'AGT': 'S', 'AGC': 'S',
@@ -49,18 +48,15 @@ def translate(dna):
         peptide.append(aa)
     return ''.join(peptide)
 
-
 # grep pfam of interest
-def grep_pfam_gtf(input_gtf, subset_gtf, pfam):
-    cmd = f'grep -i "{pfam}" {input_gtf} > {subset_gtf}'
+def grep_pfam_gtf(input_gtf):
+    cmd = f'grep -i "{args.pfam}" {input_gtf} > {input_gtf}.tmp'
     check_call(cmd, shell=True)
 
-
-# get dna sequence from .fa and translate to protein .faa (frame was already considered when gtf was writen(start and end of nucleotide))
-def get_faa(subset_gtf, fasta, pfam, output_faa):
-    # output e.g. Carbam_trans_C_selected_contigs.faa
-    writer = open(output_faa,'w')    
-    # read fasta into a dict{'source=19_0131_sewage;assembly=control;id=NODE_440_length_49190_cov_245.080228;length=49190':'ATCG....',...}
+# get dna sequence and translate to protein .faa 
+def get_faa(gtf,fasta):
+    writer = open(f'{gtf}.tmp.faa','w')    
+    # read fasta into a dict{'assembly=control;id=NODE_440_length_49190_cov_245.080228;length=49190':'ATCG....',...}
     dict = {}
     with open(fasta,'r') as f:
         header = f.readline().strip()[1:]
@@ -75,7 +71,7 @@ def get_faa(subset_gtf, fasta, pfam, output_faa):
                 seq += line
         dict[header] = seq
     # find the nucleotide sequence of each pfam record and translate
-    with open(subset_gtf,'r') as f:
+    with open(f'{gtf}.tmp','r') as f:
         for line in f:
             line=line.strip()
             contig_id = line.split('\t')[0]
@@ -90,19 +86,18 @@ def get_faa(subset_gtf, fasta, pfam, output_faa):
                 nt_seq = rev_comp(ref_seq[start-1:end])
             aa_seq = translate(nt_seq)
             # write .faa record
-            new_header = f'>{contig_id};pfam={pfam};start={start};end={end};strand={strand}'
+            new_header = f'>{contig_id};pfam={args.pfam};start={start};end={end};strand={strand}'
             print(new_header, file=writer)
             print(aa_seq, file=writer)
     writer.close()
 
-
 # rename header
 def rename(faa):
-    if 'unselected' in faa:
-        prefix = 'US'
+    if 'unmodified' in faa:
+        prefix = 'UM'
     else:
-        prefix = 'S'
-    index_file_name = faa.split('.faa')[0] + '.index'
+        prefix = 'M'
+    index_file_name = faa + '.index'
     index = open(index_file_name,'w')
     writer = open(f'rename_{faa}','w')
     with open(faa,'r') as f:
@@ -128,37 +123,48 @@ def rename(faa):
     index.close()
     writer.close()
 
-
 # MUSCLE alignment
-def muscle(input_faa, aligned_fasta):
-    cmd = f'muscle -in {input_faa} -out {aligned_fasta}'
+def muscle():
+    cmd = f'muscle -in {args.pfam}.faa -out {args.pfam}_aligned.afa'
     check_call(cmd, shell=True)
-
 
 # Raxml
-def RAXML(input, output):
-    cmd = f'raxmlHPC -f a -# 100 -p 1237 -x 1237 -m PROTGAMMAAUTO -s {input} -n {output}'
+def RAXML():
+    cmd = f'raxmlHPC -f a -# 100 -p 1237 -x 1237 -m PROTGAMMAAUTO -s {args.pfam}_aligned.afa -n {args.pfam}.tree'
     check_call(cmd, shell=True)
 
+def clear():
+    cmd = f'rm {args.pfam}_aligned* *tmp*'
+    check_call(cmd, shell=True)
 
-chdir('/Users/wyang/Desktop/phage_CT_project/dry_lab/042320_remove_redundant_contigs/phylogenetic_tree')
-pfam = 'Carbam_trans_C'
-files = [('selected_contigs_pfam_a_95.gtf', 'selected_contigs_95.fa'),
-         ('unselected_contigs_pfam_a_95.gtf', 'unselected_contigs_95.fa')]
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--pfam', help='pfam name', dest='pfam')
+    args = parser.parse_args()
+
+    with open('all_contigs_pfam_a.gtf','r') as f:
+        text = f.read()
+
+    if not args.pfam in text:
+        print('Invalid pfam name')
+        quit()
+
+files = [('modified_contigs_pfam_a.gtf','modified_contigs.fa'), 
+         ('unmodified_contigs_pfam_a.gtf','unmodified_contigs.fa')]
+
 for gtf, fasta in files:
-    subset_gtf = f'{pfam}_{gtf}'
-    grep_pfam_gtf(gtf, subset_gtf, pfam)
-    protein_faa = subset_gtf.split('_pfam_a_95.gtf')[0] +'.faa'
-    get_faa(subset_gtf, fasta, pfam, protein_faa)
-    rename(protein_faa)
+    grep_pfam_gtf(gtf)
+    get_faa(gtf,fasta)
+    rename(faa=f'{gtf}.tmp.faa')
     
-cmd = f'cat rename_*_selected_contigs.faa rename_*_unselected_contigs.faa > {pfam}.faa'
+cmd = f'cat rename_modified*.faa rename_unmodified*.faa > {args.pfam}.faa'
 check_call(cmd, shell=True)
 
-cmd = f'cat *.index > {pfam}.index'
+cmd = f'cat *.index > {args.pfam}.index'
 check_call(cmd, shell=True)
     
-muscle(f'{pfam}.faa', f'{pfam}_aligned.afa')
-RAXML(f'{pfam}_aligned.afa',f'{pfam}.tree')
+muscle()
+RAXML()
+clear()
 
-# iTOL visualize RAxML_bipartitions file
+# iTOL visualizes RAxML_bipartitions file
