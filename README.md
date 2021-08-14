@@ -7,9 +7,10 @@
 Executables in `PATH`:
 - SPAdes
 - cd-hit
-- hmmsearch
+- hmmer
 - bowtie2
-- bedtools 
+- samtools
+- bedtools
 
 Python 3:
 - numpy
