@@ -22,4 +22,4 @@ RUN apt-get install -y \
 COPY ./MetaGPA/* /MetaGPA/MetaGPA/
 COPY ./__main__.py /MetaGPA/
 WORKDIR /
-#ENTRYPOINT ["python", "MetaGPA"]
+ENTRYPOINT ["python", "MetaGPA"]
