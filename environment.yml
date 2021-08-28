@@ -2,9 +2,9 @@ name: MetaGPA
 channels:
   - bioconda
 dependencies:
-  - SPAdes=3.15.0
+  - SPAdes=3.13.1
   - cd-hit=4.8.1
   - hmmer=3.3.2
   - bowtie2=2.4.1
-  - samtools=1.9
+  - samtools=1.11
   - bedtools=2.30.0
