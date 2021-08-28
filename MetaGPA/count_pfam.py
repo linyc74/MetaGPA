@@ -81,7 +81,7 @@ class MergePfamCounts(Processor):
     def merge(self):
         df1 = pd.read_csv(self.modified_pfam_count_csv).rename(
             columns={'nonredundant_counts': 'counts_modified_contigs'})
-        df2 = pd.read_csv('unmodified_contigs_pfam_a_counts.csv').rename(
+        df2 = pd.read_csv(self.unmodified_pfam_count_csv).rename(
             columns={'nonredundant_counts': 'counts_unmodified_contigs'})
         df = pd.merge(df1, df2, how='outer', on='pfam')
         df = df.fillna(value=0)

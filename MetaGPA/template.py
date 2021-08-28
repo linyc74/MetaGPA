@@ -7,6 +7,7 @@ class Settings:
     workdir: str
     outdir: str
     threads: int
+    memory: int
     debug: bool
     mock: bool
 
@@ -15,12 +16,14 @@ class Settings:
             workdir: str,
             outdir: str,
             threads: int,
+            memory: int,
             debug: bool,
             mock: bool):
 
         self.workdir = workdir
         self.outdir = outdir
         self.threads = threads
+        self.memory = memory
         self.debug = debug
         self.mock = mock
 

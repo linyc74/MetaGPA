@@ -12,7 +12,7 @@ class CalculateEnrichment(Processor):
     control_bam: str
     case_bam: str
 
-    million_reads: Dict[str, int]
+    million_reads: Dict[str, float]
     bed: str
     multicov_output: str
     output_csv: str
@@ -47,7 +47,7 @@ class CalculateEnrichment(Processor):
             ('case', self.case_fq1),
             ('control', self.control_fq1)
         ]:
-            self.million_reads[key] = int(count_fq_reads(fq) / 1000000)
+            self.million_reads[key] = count_fq_reads(fq) / 1000000
 
     def write_bed(self):
         self.bed = f'{self.workdir}/tmp.bed'

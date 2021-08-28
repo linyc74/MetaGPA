@@ -13,7 +13,7 @@ Metagenomics Genome and Phenome Association (MetaGPA) Analysis
 Version: {__version__}
 
 Authors:
-  Yu-Cheng Lin (ylin@nycu.edu.edu)
+  Yu-Cheng Lin (ylin@nycu.edu.tw)
   Weiwei Yang (wyang@neb.com)'''
 
 REQUIRED = [
@@ -97,6 +97,15 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['-m', '--memory'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': 128,
+            'help': 'maximum memory (GB) used by SPAdes assembler (default: %(default)s)',
+        }
+    },
+    {
         'keys': ['-d', '--debug'],
         'properties': {
             'action': 'store_true',
@@ -160,6 +169,7 @@ class EntryPoint:
             enrichment_cutoff=args.enrichment_cutoff,
             outdir=args.outdir,
             threads=args.threads,
+            memory=args.memory,
             debug=args.debug
         )
 

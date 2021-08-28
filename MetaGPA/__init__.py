@@ -15,6 +15,7 @@ def main(
         enrichment_cutoff: float,
         outdir: str,
         threads: int,
+        memory: int,
         debug: bool):
 
     Main().main(
@@ -27,6 +28,7 @@ def main(
         enrichment_cutoff=enrichment_cutoff,
         outdir=outdir,
         threads=threads,
+        memory=memory,
         debug=debug)
 
 
@@ -41,6 +43,7 @@ class Main:
     enrichment_cutoff: float
     outdir: str
     threads: int
+    memory: int
     debug: bool
 
     settings: Settings
@@ -56,6 +59,7 @@ class Main:
             enrichment_cutoff: float,
             outdir: str,
             threads: int,
+            memory: int,
             debug: bool):
 
         self.control_fq_1 = control_fq_1
@@ -67,6 +71,7 @@ class Main:
         self.enrichment_cutoff = enrichment_cutoff
         self.outdir = outdir
         self.threads = threads
+        self.memory = memory
         self.debug = debug
 
         self.set_settings()
@@ -79,6 +84,7 @@ class Main:
             workdir=get_temp_path(prefix='workdir'),
             outdir=self.outdir,
             threads=self.threads,
+            memory=self.memory,
             debug=self.debug,
             mock=False)
 

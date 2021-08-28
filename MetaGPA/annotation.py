@@ -26,7 +26,7 @@ class Annotation(Processor):
         return self.output_gtf
 
     def translate_dna_to_protein(self):
-        self.faa = f'{self.outdir}/translated.fa'
+        self.faa = f'{self.workdir}/translated.fa'
         with open(self.faa, 'w') as writer:
             with open(self.fna) as reader:
                 header = reader.readline().strip()
@@ -70,17 +70,18 @@ class Annotation(Processor):
         self.call(cmd)
 
     def parse_hmm(self):
-        ''' parse the result by hmmer and create a gtf file with 9 tab-delimited fields:
-                    1   seqname     <contig_id>
-                    2   source      .
-                    3   feature     CDS
-                    4   start       <start_bp>
-                    5   end         <end_bp>
-                    6   score       .
-                    7   strand      +/-
-                    8   frame       0
-                    9   attribute   name "<query_name>";accession "<query_accession>";description "<query_description>";E_value "<E_value>"
-        '''
+        """
+        parse the result by hmmer and create a gtf file with 9 tab-delimited fields:
+        1   seqname     <contig_id>
+        2   source      .
+        3   feature     CDS
+        4   start       <start_bp>
+        5   end         <end_bp>
+        6   score       .
+        7   strand      +/-
+        8   frame       0
+        9   attribute   name "<query_name>";accession "<query_accession>";description "<query_description>";E_value "<E_value>"
+        """
 
         with open(self.hmm_txt) as f:
             text = f.read()

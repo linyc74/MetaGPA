@@ -42,14 +42,14 @@ class Mapping(Processor):
         self.call(cmd)
 
     def map_reads(self):
-        self.control_bam = f'{self.outdir}/control.bam'
-        self.case_bam = f'{self.outdir}/case.bam'
+        self.control_bam = f'{self.workdir}/control.bam'
+        self.case_bam = f'{self.workdir}/case.bam'
         for fq1, fq2, bam in [
             (self.control_fq1, self.control_fq2, self.control_bam),
             (self.case_fq1, self.case_fq2, self.case_bam)
         ]:
             cmd = [
-                f'bowtie2 --threads {self.threads} -x {self.index} -1 {fq1} -2 {fq2} --no-unal | samtools view -@ 8 -bS - | samtools sort -@ 8 - > {bam}',
+                f'bowtie2 --threads {self.threads} -x {self.index} -1 {fq1} -2 {fq2} --no-unal | samtools view -@ {self.threads} -bS - | samtools sort -@ {self.threads} - > {bam}',
                 f'samtools index {bam}']
             for each in cmd:
                 self.call(each)

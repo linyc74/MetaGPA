@@ -5,7 +5,7 @@ from .template import Processor, Settings
 
 class Assembly(Processor):
 
-    MEMORY: int
+    MEMORY: int = 4
 
     fq1: str
     fq2: str
@@ -13,7 +13,7 @@ class Assembly(Processor):
     min_contigs_length: int
 
     assembly_dir: str
-    filtered_fa_data: List[Tuple[str, str]]
+    fa_data: List[Tuple[str, str]]
     output_fa: str
 
     def __init__(self, settings: Settings):
@@ -48,25 +48,25 @@ class Assembly(Processor):
 
     def filter_by_contig_length(self):
         with open(f'{self.assembly_dir}/contigs.fasta') as f:
-            self.filtered_fa_data = []
+            self.fa_data = []
             header = f.readline().strip()
             seq = ''
             while True:
                 line = f.readline().strip()
                 if line.startswith('>'):
-                    self.filtered_fa_data.append((header, seq))
+                    self.fa_data.append((header, seq))
                     header = line
                     seq = ''
                 elif line == '':
-                    self.filtered_fa_data.append((header, seq))
+                    self.fa_data.append((header, seq))
                     break
                 else:
                     seq = seq + line
 
     def write_output_fa(self):
-        self.output_fa = f'{self.outdir}/{self.assembly_name}.fa'
+        self.output_fa = f'{self.workdir}/{self.assembly_name}.fa'
         with open(self.output_fa, 'w') as f:
-            for header, seq in self.filtered_fa_data:
+            for header, seq in self.fa_data:
                 if len(seq) >= self.min_contigs_length:
                     print(f'{header}\n{seq}', file=f)
 
@@ -86,7 +86,7 @@ class CombineAssembly(Processor):
         self.control_fa = control_fa
         self.case_fa = case_fa
 
-        self.output_fa = f'{self.outdir}/all_contigs.fa'
+        self.output_fa = f'{self.workdir}/all_contigs.fa'
 
         with open(self.output_fa, 'w') as writer:
             for name, fa in [
