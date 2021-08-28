@@ -5,8 +5,6 @@ from .template import Processor, Settings
 
 class Assembly(Processor):
 
-    MEMORY: int = 4
-
     fq1: str
     fq2: str
     assembly_name: str
@@ -43,7 +41,7 @@ class Assembly(Processor):
         os.makedirs(self.assembly_dir, exist_ok=True)
 
     def spades_assembly(self):
-        cmd = f'spades.py --meta -1 {self.fq1} -2 {self.fq2} -o {self.assembly_dir} --threads {self.threads} --memory {self.MEMORY}'
+        cmd = f'spades.py --meta -1 {self.fq1} -2 {self.fq2} -o {self.assembly_dir} --threads {self.threads} --memory {self.memory}'
         self.call(cmd)
 
     def filter_by_contig_length(self):

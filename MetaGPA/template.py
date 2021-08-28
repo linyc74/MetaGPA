@@ -58,6 +58,7 @@ class Processor:
     workdir: str
     outdir: str
     threads: int
+    memory: int
     debug: bool
     mock: bool
 
@@ -69,6 +70,7 @@ class Processor:
         self.workdir = settings.workdir
         self.outdir = settings.outdir
         self.threads = settings.threads
+        self.memory = settings.memory
         self.debug = settings.debug
         self.mock = self.settings.mock
 
