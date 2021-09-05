@@ -6,6 +6,7 @@ RUN apt-get update --allow-releaseinfo-change \
     cmake \
     zlib1g-dev \
     libbz2-dev \
+    gzip \
     libtbb2
 
 # 'cd' into the build directory is required !
