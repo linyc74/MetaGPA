@@ -11,6 +11,7 @@ RUN apt-get update --allow-releaseinfo-change \
 # 'cd' into the build directory is required !
 RUN wget http://cab.spbu.ru/files/release3.15.3/SPAdes-3.15.3.tar.gz \
  && tar -xzf SPAdes-3.15.3.tar.gz \
+ && rm SPAdes-3.15.3.tar.gz \
  && cd /SPAdes-3.15.3 \
  && ./spades_compile.sh
 
