@@ -2,7 +2,7 @@
 
 **Metagenomics Genome and Phenome Association (MetaGPA) Analysis**
 
-### Requirements
+## Requirements
 
 Executables in `PATH`:
 - SPAdes
@@ -21,11 +21,11 @@ Python 3:
 - pandas
 - argparse
 
-### Resource Files
+## Resource Files
 
 `Pfam-A.hmm.gz` can be downloaded from [Release 33.0](http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam33.0)
 
-### Usage
+## Usage
 
 Clone the package:
 
@@ -51,12 +51,12 @@ Other options:
 -c <enrichment score cutoff> [default 3.0]
 ```
 
-### Input Fastq Files
+## Input Files
 
 - Can be compressed `.gz`
-- Needs to be trimmed, e.g. by `Cutadapt`
+- Fastq files need to be trimmed, e.g. by `Cutadapt`
 
-### Output Files
+## Output Files
 
 1. `all_contigs.nd.fa` all contigs assembled from case and control samples, redundant contigs removed
 2. `all_contigs_pfam_a.gtf` hmm annotation file, containing 9 tab-delimited fields:
@@ -99,4 +99,31 @@ Other options:
 3   counts_unmodified_contigs <counts on unmodified contigs>
 4   p_value                   <two sided fisher exact test p value>
 5   corrected_p_value         <bonferroni correction for multitest>
+```
+
+## Docker
+
+Pull Docker image
+
+```bash
+docker pull linyc74/metagpa:latest
+```
+
+Run container
+
+```bash
+docker run \
+--volume "/PATH/TO/OUTDIR":"/PATH/TO/OUTDIR" \
+--volume "/PATH/TO/INDIR":"/PATH/TO/INDIR" \
+linyc74/metagpa:latest \
+--control-fq-1 /PATH/TO/INDIR/control.1.fq.gz \
+--control-fq-2 /PATH/TO/INDIR/control.2.fq.gz \
+--case-fq-1 /PATH/TO/INDIR/case.1.fq.gz \
+--case-fq-2 /PATH/TO/INDIR/case.2.fq.gz \
+--pfam-hmm /PATH/TO/INDIR/Pfam-A.hmm.gz \
+--min-contig-length 1000 \
+--enrichment-cutoff 3.0 \
+--threads 32 \
+--memory 128 \
+--outdir /PATH/TO/OUTDIR
 ```
