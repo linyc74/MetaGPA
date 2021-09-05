@@ -2,29 +2,6 @@
 
 **Metagenomics Genome and Phenome Association (MetaGPA) Analysis**
 
-## Requirements
-
-Executables in `PATH`:
-- SPAdes
-- cd-hit
-- hmmer
-- bowtie2
-- samtools
-- bedtools
-
-Python 3:
-- numpy
-- matplotlib
-- seaborn
-- scipy
-- statsmodels
-- pandas
-- argparse
-
-## Resource Files
-
-`Pfam-A.hmm.gz` can be downloaded from [Release 33.0](http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam33.0)
-
 ## Usage
 
 Clone the package:
@@ -50,6 +27,31 @@ Other options:
 -l <minimum contig length> [default 1000]
 -c <enrichment score cutoff> [default 3.0]
 ```
+
+## Requirements
+
+Executables in the environment variable `PATH`:
+- SPAdes (3.15.3)
+- cd-hit (4.8.1)
+- hmmer (3.3.2)
+- bowtie2 (2.4.1)
+- samtools (1.11)
+- bedtools (2.30.0)
+
+Python 3 libraries:
+- numpy (1.19.2)
+- pandas (1.2.4)
+- matplotlib (3.3.2)
+- seaborn (0.11.0)
+- scipy (1.5.2)
+- statsmodels (0.12.0)
+- argparse (1.1)
+
+*Versions shown in parentheses have been tested, but not required.*
+
+## Resource Files
+
+`Pfam-A.hmm.gz` can be downloaded from [Release 33.0](http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam33.0)
 
 ## Input Files
 
