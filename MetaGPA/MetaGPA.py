@@ -90,6 +90,8 @@ class MetaGPA(Processor):
         self.all_nd_fa = f'{self.outdir}/all_contigs.nd.fa'
         cmd = f'cd-hit-est -i {self.all_fa} -o {self.all_nd_fa} -c 0.95 -n 10 -d 0 -M 0 -T {self.threads}'
         self.call(cmd)
+        cmd = f'mv {self.all_nd_fa}.clstr {self.workdir}/'
+        self.call(cmd)
 
     def annotation(self):
         self.gtf = Annotation(self.settings).main(
@@ -124,8 +126,8 @@ class MetaGPA(Processor):
             enrichment_cut_off=self.enrichment_cut_off)
 
     def count_nonredundant_pfams(self):
-        self.modified_pfam_count_csv = f'{self.outdir}/modified_contigs_pfam_a_counts.csv'
-        self.unmodified_pfam_count_csv = f'{self.outdir}/unmodified_contigs_pfam_a_counts.csv'
+        self.modified_pfam_count_csv = f'{self.workdir}/modified_contigs_pfam_a_counts.csv'
+        self.unmodified_pfam_count_csv = f'{self.workdir}/unmodified_contigs_pfam_a_counts.csv'
 
         for gtf, csv in [
             (self.modified_gtf, self.modified_pfam_count_csv),

@@ -130,11 +130,11 @@ def muscle():
 
 # Raxml
 def RAXML():
-    cmd = f'raxmlHPC -f a -# 100 -p 1237 -x 1237 -m PROTGAMMAAUTO -s {args.pfam}_aligned.afa -n {args.pfam}.tree'
+    cmd = f'raxmlHPC -f a -# autoMRE -p 1237 -x 1237 -m PROTGAMMAAUTO -s {args.pfam}_aligned.afa -n {args.pfam}.tree'
     check_call(cmd, shell=True)
 
 def clear():
-    cmd = f'rm {args.pfam}_aligned* *tmp*'
+    cmd = f'rm {args.pfam}_aligned* *tmp* {args.pfam}.faa'
     check_call(cmd, shell=True)
 
 if __name__ == '__main__':

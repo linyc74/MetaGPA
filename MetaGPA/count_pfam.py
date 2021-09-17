@@ -89,5 +89,5 @@ class MergePfamCounts(Processor):
         self.merged_df = df
 
     def write_csv(self):
-        self.merged_pfam_count_csv = f'{self.outdir}/merged_pfam_a_counts.csv'
+        self.merged_pfam_count_csv = f'{self.workdir}/merged_pfam_a_counts.csv'
         self.merged_df.to_csv(self.merged_pfam_count_csv, index=False, header=True)

@@ -31,6 +31,12 @@ Other options:
 -c <enrichment score cutoff> [default 3.0]
 ```
 
+For more details
+
+```bash
+python MetaGPA -h
+```
+
 ## Requirements
 
 Executables in the environment variable `PATH`:
@@ -103,7 +109,8 @@ Python 3 libraries:
 2   counts_modified_contigs   <counts on modified contigs>
 3   counts_unmodified_contigs <counts on unmodified contigs>
 4   p_value                   <two sided fisher exact test p value>
-5   corrected_p_value         <bonferroni correction for multitest>
+5   Enriched/depleted         <enriched/depleted in modified contigs>
+6   corrected_p_value         <bonferroni correction for multitest>
 ```
 
 ## Docker
