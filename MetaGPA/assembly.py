@@ -41,7 +41,15 @@ class Assembly(Processor):
         os.makedirs(self.assembly_dir, exist_ok=True)
 
     def spades_assembly(self):
-        cmd = f'spades.py --meta -1 {self.fq1} -2 {self.fq2} -o {self.assembly_dir} --threads {self.threads} --memory {self.memory}'
+        cmd = f'''\
+spades.py --meta \\
+-1 {self.fq1} \\
+-2 {self.fq2} \\
+-o {self.assembly_dir} \\
+--threads {self.threads} \\
+--memory {self.memory} \\
+1> {self.workdir}/spades_stdout.log \\
+2> {self.workdir}/spades_stderr.log'''
         self.call(cmd)
 
     def filter_by_contig_length(self):

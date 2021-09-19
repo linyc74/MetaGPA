@@ -31,7 +31,7 @@ Other options:
 -c <enrichment score cutoff> [default 3.0]
 ```
 
-For more details
+For more details, use help message:
 
 ```bash
 python MetaGPA -h

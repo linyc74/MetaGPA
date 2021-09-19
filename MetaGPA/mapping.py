@@ -38,7 +38,7 @@ class Mapping(Processor):
 
     def index_genome(self):
         self.index = f'{self.workdir}/bowtie2-index'
-        cmd = f'bowtie2-build -f {self.fna} {self.index}'
+        cmd = f'bowtie2-build -f {self.fna} {self.index} > {self.workdir}/bowtie2-build.log'
         self.call(cmd)
 
     def map_reads(self):
