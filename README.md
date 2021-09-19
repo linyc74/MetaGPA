@@ -144,8 +144,8 @@ linyc74/metagpa:latest \
 
 To test the MetaGPA main pipeline, a small dataset is provided in the `test` folder, including the following files:
 
-- test_control.1.fq.gz
-- test_control.2.fq.gz
-- test_case.1.fq.gz
-- test_case.2.fq.gz
-- Pfam-A-sampled.hmm.gz
+- `test_control.1.fq.gz`
+- `test_control.2.fq.gz`
+- `test_case.1.fq.gz`
+- `test_case.2.fq.gz`
+- `Pfam-A-sampled.hmm.gz`
