@@ -3,7 +3,7 @@
 **MetaGPA (Metagenomics Genome-Phenome Association)** pipeline is used to link genetic information (e.g. genes encoding for enzymes) in metagenome with a dedicated functional phenotype (e.g. DNA cytosine modification).
 The main MetaGPA pipeline identifies protein family domains (Pfam, from Pfam-A database, http://pfam.xfam.org/) which are significantly associated with the studied phenotype.
 We also provide additional scripts for further analyses of any chosen interested Pfam identified from the main pipeline.
-For more details, please read our preprint on https://www.biorxiv.org/content/10.1101/2021.03.23.436658v1.
+For more details, please refer to our paper: [A Genome-Phenome Association study in native microbiomes identifies a mechanism for cytosine modification in DNA and RNA.](https://elifesciences.org/articles/70021)
 
 ## Usage
 
@@ -149,3 +149,7 @@ To test the MetaGPA main pipeline, a small dataset is provided in the `test` fol
 - `test_case.1.fq.gz`
 - `test_case.2.fq.gz`
 - `Pfam-A-sampled.hmm.gz`
+
+## Publication
+
+- Yang W, Lin Y-C, Johnson W, Dai N, Vaisvila R, Weigele P, Lee Y-J, Corrêa IR Jr, Schildkraut I & Ettwiller L (2021/11). [A Genome-Phenome Association study in native microbiomes identifies a mechanism for cytosine modification in DNA and RNA.](https://elifesciences.org/articles/70021) *eLife*, 10:e70021.
